@@ -1,4 +1,6 @@
 Endpoints and URLs
+
+
 Get prescriptions by medical provider ID
 Description: Retrieves all prescriptions associated with a specific medical provider.
 URL: http://localhost:8080/api/prescriptions/by-medical-provider?medicalProviderId=39
