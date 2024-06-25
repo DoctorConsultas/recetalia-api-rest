@@ -11,6 +11,7 @@ import com.recetalia.api.application.domain.repository.PrescriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,5 +65,40 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     return prescriptionRepository.findAll().stream()
             .map(responseMapper::toDto)
             .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId) {
+    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId);
+    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId) {
+    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId);
+    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  }
+
+  @Override
+  public long getPrescriptionCountByMedicalProviderId(String medicalProviderId) {
+    return prescriptionRepository.countPrescriptionsByMedicalProviderId(medicalProviderId);
+  }
+
+  @Override
+  public List<PrescriptionResponse> getActivePrescriptionsByMedicalProviderId(String medicalProviderId) {
+    List<Prescription> prescriptions = prescriptionRepository.findActivePrescriptionsByMedicalProviderId(medicalProviderId);
+    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate) {
+    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate);
+    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate) {
+    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndDateRange(medicId, startDate, endDate);
+    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
   }
 }

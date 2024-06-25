@@ -65,4 +65,12 @@ public class MedicServiceImpl implements MedicService {
             .map(responseMapper::toDto)
             .collect(Collectors.toList());
   }
+
+  @Override
+  public List<MedicResponse> getMedicsByMedicalProviderId(String medicalProviderId) {
+    List<Medic> medics = medicRepository.findByMedicalProviderId(medicalProviderId);
+    return medics.stream()
+            .map(responseMapper::toDto)
+            .collect(Collectors.toList());
+  }
 }

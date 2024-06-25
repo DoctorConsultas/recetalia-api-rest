@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -81,5 +84,90 @@ public class PrescriptionController {
   public ResponseEntity<List<PrescriptionResponse>> getAllPrescriptions() {
     List<PrescriptionResponse> responses = prescriptionService.getAllPrescriptions();
     return ResponseEntity.ok(responses);
+  }
+
+  /**
+   * Get prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  @GetMapping("/by-medical-provider")
+  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicalProviderId(@RequestParam String medicalProviderId) {
+    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId);
+    return ResponseEntity.ok(prescriptions);
+  }
+
+  /**
+   * Get prescriptions by medic ID and medical provider ID.
+   *
+   * @param medicId the ID of the medic
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  @GetMapping("/by-medic-and-medical-provider")
+  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicIdAndMedicalProviderId(@RequestParam String medicId, @RequestParam String medicalProviderId) {
+    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId);
+    return ResponseEntity.ok(prescriptions);
+  }
+
+  /**
+   * Get the number of prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return the number of prescriptions
+   */
+  @GetMapping("/count-by-medical-provider")
+  public ResponseEntity<Long> getPrescriptionCountByMedicalProviderId(@RequestParam String medicalProviderId) {
+    long count = prescriptionService.getPrescriptionCountByMedicalProviderId(medicalProviderId);
+    return ResponseEntity.ok(count);
+  }
+
+  /**
+   * Get active prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  @GetMapping("/active-by-medical-provider")
+  public ResponseEntity<List<PrescriptionResponse>> getActivePrescriptionsByMedicalProviderId(@RequestParam String medicalProviderId) {
+    List<PrescriptionResponse> prescriptions = prescriptionService.getActivePrescriptionsByMedicalProviderId(medicalProviderId);
+    return ResponseEntity.ok(prescriptions);
+  }
+
+  /**
+   * Get prescriptions by medical provider ID and date range.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @param startDate the start date
+   * @param endDate the end date
+   * @return a list of PrescriptionResponse DTOs
+   */
+  @GetMapping("/by-medical-provider-and-date-range")
+  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdAndDateRange(@RequestParam String medicalProviderId,
+                                                                                                    @RequestParam LocalDate startDate,
+                                                                                                    @RequestParam LocalDate endDate) {
+    Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant(); // end of the day
+    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant);
+    return ResponseEntity.ok(prescriptions);
+  }
+
+  /**
+   * Get prescriptions by medic ID and date range.
+   *
+   * @param medicId the ID of the medic
+   * @param startDate the start date
+   * @param endDate the end date
+   * @return a list of PrescriptionResponse DTOs
+   */
+  @GetMapping("/by-medic-and-date-range")
+  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicIdAndDateRange(@RequestParam String medicId,
+                                                                                          @RequestParam LocalDate startDate,
+                                                                                          @RequestParam LocalDate endDate) {
+    Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant(); // end of the day
+    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndDateRange(medicId, startInstant, endInstant);
+    return ResponseEntity.ok(prescriptions);
   }
 }

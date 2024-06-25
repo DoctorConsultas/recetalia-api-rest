@@ -53,4 +53,12 @@ public interface MedicService {
    * @return a list of MedicResponse DTOs
    */
   List<MedicResponse> getAllMedics();
+
+  /**
+   * Gets all Medics associated with a specific Medical Provider.
+   *
+   * @param medicalProviderId the ID of the Medical Provider
+   * @return a list of MedicResponse DTOs
+   */
+  List<MedicResponse> getMedicsByMedicalProviderId(String medicalProviderId);
 }

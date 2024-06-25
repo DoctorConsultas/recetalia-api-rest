@@ -1,1 +1,0 @@
-# recetalia-api-rest

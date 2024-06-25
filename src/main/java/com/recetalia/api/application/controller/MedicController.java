@@ -82,4 +82,16 @@ public class MedicController {
     List<MedicResponse> responses = medicService.getAllMedics();
     return ResponseEntity.ok(responses);
   }
+
+  /**
+   * Get all Medics associated with a specific Medical Provider.
+   *
+   * @param medicalProviderId the ID of the Medical Provider
+   * @return a list of MedicResponse DTOs
+   */
+  @GetMapping("/by-medical-provider/{medicalProviderId}")
+  public ResponseEntity<List<MedicResponse>> getMedicsByMedicalProviderId(@PathVariable String medicalProviderId) {
+    List<MedicResponse> responses = medicService.getMedicsByMedicalProviderId(medicalProviderId);
+    return ResponseEntity.ok(responses);
+  }
 }

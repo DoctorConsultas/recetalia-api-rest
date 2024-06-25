@@ -4,6 +4,7 @@ import com.recetalia.api.application.dto.request.PrescriptionRequest;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -52,4 +53,57 @@ public interface PrescriptionService {
    * @return a list of PrescriptionResponse DTOs
    */
   List<PrescriptionResponse> getAllPrescriptions();
+
+  /**
+   * Gets prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  List<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId);
+
+  /**
+   * Gets prescriptions by medic ID and medical provider ID.
+   *
+   * @param medicId the ID of the medic
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  List<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId);
+
+  /**
+   * Gets the number of prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return the number of prescriptions
+   */
+  long getPrescriptionCountByMedicalProviderId(String medicalProviderId);
+
+  /**
+   * Gets active prescriptions by medical provider ID.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @return a list of PrescriptionResponse DTOs
+   */
+  List<PrescriptionResponse> getActivePrescriptionsByMedicalProviderId(String medicalProviderId);
+
+  /**
+   * Gets prescriptions by medical provider ID and date range.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @param startDate the start date
+   * @param endDate the end date
+   * @return a list of PrescriptionResponse DTOs
+   */
+  List<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate);
+
+  /**
+   * Get prescriptions by medic ID and date range.
+   *
+   * @param medicId the ID of the medic
+   * @param startDate the start date
+   * @param endDate the end date
+   * @return a list of PrescriptionResponse DTOs
+   */
+  List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate);
 }

@@ -65,4 +65,6 @@ public class MedicalProviderServiceImpl implements MedicalProviderService {
             .map(responseMapper::toDto)
             .collect(Collectors.toList());
   }
+
+
 }

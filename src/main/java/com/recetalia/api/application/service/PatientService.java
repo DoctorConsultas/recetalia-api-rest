@@ -52,4 +52,13 @@ public interface PatientService {
    * @return a list of PatientResponse DTOs
    */
   List<PatientResponse> getAllPatients();
+
+  /**
+   * Gets all Patients associated with a specific Medic and Medical Provider.
+   *
+   * @param medicId the ID of the Medic
+   * @param medicalProviderId the ID of the Medical Provider
+   * @return a list of PatientResponse DTOs
+   */
+  List<PatientResponse> getPatientsByMedicAndMedicalProvider(String medicId, String medicalProviderId);
 }
