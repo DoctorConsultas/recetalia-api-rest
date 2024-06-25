@@ -81,5 +81,4 @@ public class Prescription {
   @ColumnDefault("0")
   @Column(name = "dispensationPendingReminderSended", nullable = false)
   private Byte dispensationPendingReminderSended;
-
 }

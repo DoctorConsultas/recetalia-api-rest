@@ -36,10 +36,10 @@ public class PrescriptionRequest {
   private String doseUnit;
 
   @Schema(description = "Frequency of the dose", example = "3")
-  private Integer frequency;
+  private Integer frecuency;
 
   @Schema(description = "Frequency unit", example = "times per day")
-  private String frequencyUnit;
+  private String frecuencyUnit;
 
   @Schema(description = "Medical history details", example = "Patient has a history of hypertension")
   private String medicalHistory;

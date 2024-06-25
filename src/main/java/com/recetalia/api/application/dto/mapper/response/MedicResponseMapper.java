@@ -5,6 +5,7 @@ import com.recetalia.api.application.domain.model.entities.Medic;
 import com.recetalia.api.application.dto.response.MedicResponse;
 import com.recetalia.api.application.infrastructure.config.MapStructConfig;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper to convert Medic entity to MedicResponse DTO.
@@ -18,5 +19,8 @@ public interface MedicResponseMapper {
    * @param entity the Medic entity
    * @return the MedicResponse DTO
    */
+  @Mapping(source = "addressCountry.id", target = "addressCountryId")
+  @Mapping(source = "addressLocality.id", target = "addressLocalityId")
+  @Mapping(source = "especiality.id", target = "especialityId")
   MedicResponse toDto(Medic entity);
 }
