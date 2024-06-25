@@ -54,5 +54,5 @@ Get all Patients of a specific Medic associated with a specific Medical Provider
 
 Description: Retrieves all patients of a specific doctor associated with a specific medical provider.
 
-URL: http://localhost:8080/api/patients/by-medic-and-provider?medicId=88d90c15-223b-4969-8ccc-a53dbffdf0a5&medicalProviderId=
+URL: http://localhost:8080/api/patients/by-medic-and-provider?medicId=88d90c15-223b-4969-8ccc-a53dbffdf0a5&medicalProviderId=39
 
