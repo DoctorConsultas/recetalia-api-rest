@@ -73,4 +73,7 @@ public class PrescriptionResponse {
 
   @Schema(description = "Deletion timestamp", example = "2023-07-15T00:00:00Z")
   private Instant deletedAt;
+
+  @Schema(description = "Link to the individual prescription resource", example = "http://localhost:8080/api/prescriptions/{id}")
+  private String link;
 }

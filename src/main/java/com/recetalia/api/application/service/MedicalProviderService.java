@@ -1,5 +1,6 @@
 package com.recetalia.api.application.service;
 
+import com.recetalia.api.application.dto.request.MedicalProviderLoginRequest;
 import com.recetalia.api.application.dto.request.MedicalProviderRequest;
 import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.infrastructure.exception.*;
@@ -52,4 +53,13 @@ public interface MedicalProviderService {
    * @return a list of MedicalProviderResponse DTOs
    */
   List<MedicalProviderResponse> getAllMedicalProviders();
+
+  /**
+   * Authenticates a MedicalProvider using email and password.
+   *
+   * @param loginRequest the login request DTO
+   * @return the authenticated MedicalProviderResponse DTO
+   * @throws ResourceNotFoundException if the MedicalProvider is not found
+   */
+  MedicalProviderResponse login(MedicalProviderLoginRequest loginRequest) throws ResourceNotFoundException;
 }

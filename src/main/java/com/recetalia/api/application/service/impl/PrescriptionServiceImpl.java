@@ -9,6 +9,8 @@ import com.recetalia.api.application.service.PrescriptionService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
 import com.recetalia.api.application.domain.repository.PrescriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -68,15 +70,15 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public List<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId) {
-    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId);
-    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId, pageable);
+    return prescriptions.map(responseMapper::toDto);
   }
 
   @Override
-  public List<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId) {
-    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId);
-    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  public Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable);
+    return prescriptions.map(responseMapper::toDto);
   }
 
   @Override

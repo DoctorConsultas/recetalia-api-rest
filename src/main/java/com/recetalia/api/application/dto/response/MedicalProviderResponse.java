@@ -70,4 +70,7 @@ public class MedicalProviderResponse {
 
   @Schema(description = "Status of the provider", example = "ACTIVE", required = true)
   private String status;
+
+  @Schema(description = "Link to the individual medical provider resource", example = "http://localhost:8080/api/medical-providers/{id}")
+  private String link;
 }

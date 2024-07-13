@@ -1,5 +1,6 @@
 package com.recetalia.api.application.controller;
 
+import com.recetalia.api.application.dto.request.MedicalProviderLoginRequest;
 import com.recetalia.api.application.dto.request.MedicalProviderRequest;
 import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.service.MedicalProviderService;
@@ -81,5 +82,17 @@ public class MedicalProviderController {
   public ResponseEntity<List<MedicalProviderResponse>> getAllMedicalProviders() {
     List<MedicalProviderResponse> responses = medicalProviderService.getAllMedicalProviders();
     return ResponseEntity.ok(responses);
+  }
+
+  /**
+   * Authenticate a MedicalProvider using email and password.
+   *
+   * @param loginRequest the MedicalProviderLoginRequest DTO
+   * @return the authenticated MedicalProviderResponse DTO
+   */
+  @PostMapping("/login")
+  public ResponseEntity<MedicalProviderResponse> login(@RequestBody MedicalProviderLoginRequest loginRequest) {
+    MedicalProviderResponse response = medicalProviderService.login(loginRequest);
+    return ResponseEntity.ok(response);
   }
 }

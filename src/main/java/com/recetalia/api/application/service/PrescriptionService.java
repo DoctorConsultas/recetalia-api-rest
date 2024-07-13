@@ -3,6 +3,8 @@ package com.recetalia.api.application.service;
 import com.recetalia.api.application.dto.request.PrescriptionRequest;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.util.List;
@@ -55,21 +57,23 @@ public interface PrescriptionService {
   List<PrescriptionResponse> getAllPrescriptions();
 
   /**
-   * Gets prescriptions by medical provider ID.
+   * Gets paginated prescriptions by medical provider ID.
    *
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of PrescriptionResponse DTOs
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
    */
-  List<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId);
+  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, Pageable pageable);
 
   /**
-   * Gets prescriptions by medic ID and medical provider ID.
+   * Gets paginated prescriptions by medic ID and medical provider ID.
    *
    * @param medicId the ID of the medic
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of PrescriptionResponse DTOs
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
    */
-  List<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId);
+  Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable);
 
   /**
    * Gets the number of prescriptions by medical provider ID.

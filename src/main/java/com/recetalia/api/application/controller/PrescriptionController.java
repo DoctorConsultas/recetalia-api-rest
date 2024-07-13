@@ -5,6 +5,8 @@ import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.service.PrescriptionService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,27 +89,31 @@ public class PrescriptionController {
   }
 
   /**
-   * Get prescriptions by medical provider ID.
+   * Get paginated prescriptions by medical provider ID.
    *
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of PrescriptionResponse DTOs
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
    */
-  @GetMapping("/by-medical-provider")
-  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicalProviderId(@RequestParam String medicalProviderId) {
-    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId);
+  @GetMapping("/by-medical-provider-paginated")
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdPaginated(@RequestParam String medicalProviderId, Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 
   /**
-   * Get prescriptions by medic ID and medical provider ID.
+   * Get paginated prescriptions by medic ID and medical provider ID.
    *
    * @param medicId the ID of the medic
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of PrescriptionResponse DTOs
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
    */
-  @GetMapping("/by-medic-and-medical-provider")
-  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicIdAndMedicalProviderId(@RequestParam String medicId, @RequestParam String medicalProviderId) {
-    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId);
+  @GetMapping("/by-medic-and-medical-provider-paginated")
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicIdAndMedicalProviderIdPaginated(@RequestParam String medicId,
+                                                                                                           @RequestParam String medicalProviderId,
+                                                                                                           Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 

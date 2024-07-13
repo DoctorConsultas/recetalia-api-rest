@@ -1,6 +1,8 @@
 package com.recetalia.api.application.domain.repository;
 
 import com.recetalia.api.application.domain.model.entities.Prescription;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,30 +18,38 @@ import java.util.List;
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, String> {
   /**
-   * Find prescriptions by medical provider ID.
+   * Find paginated prescriptions by medical provider ID.
    *
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of prescriptions
+   * @param pageable the pagination information
+   * @return a page of prescriptions
    */
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE mp.id = :medicalProviderId", nativeQuery = true)
-  List<Prescription> findPrescriptionsByMedicalProviderId(@Param("medicalProviderId") String medicalProviderId);
+          "WHERE mp.id = :medicalProviderId",
+          countQuery = "SELECT COUNT(*) FROM prescription p " +
+                  "JOIN medic m ON p.medicId = m.id " +
+                  "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+                  "WHERE mp.id = :medicalProviderId",
+          nativeQuery = true)
+  Page<Prescription> findPrescriptionsByMedicalProviderId(@Param("medicalProviderId") String medicalProviderId, Pageable pageable);
 
   /**
-   * Find prescriptions by medic ID and medical provider ID.
+   * Find paginated prescriptions by medic ID and medical provider ID.
    *
    * @param medicId the ID of the medic
    * @param medicalProviderId the ID of the medical provider
-   * @return a list of prescriptions
+   * @param pageable the pagination information
+   * @return a page of prescriptions
    */
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
           "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId", nativeQuery = true)
-  List<Prescription> findPrescriptionsByMedicIdAndMedicalProviderId(@Param("medicId") String medicId, @Param("medicalProviderId") String medicalProviderId);
-
+  Page<Prescription> findPrescriptionsByMedicIdAndMedicalProviderId(@Param("medicId") String medicId,
+                                                                    @Param("medicalProviderId") String medicalProviderId,
+                                                                    Pageable pageable);
   /**
    * Count prescriptions by medical provider ID.
    *

@@ -3,6 +3,7 @@ package com.recetalia.api.application.service.impl;
 import com.recetalia.api.application.domain.model.entities.MedicalProvider;
 import com.recetalia.api.application.dto.mapper.request.MedicalProviderRequestMapper;
 import com.recetalia.api.application.dto.mapper.response.MedicalProviderResponseMapper;
+import com.recetalia.api.application.dto.request.MedicalProviderLoginRequest;
 import com.recetalia.api.application.dto.request.MedicalProviderRequest;
 import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,18 @@ public class MedicalProviderServiceImpl implements MedicalProviderService {
     return medicalProviderRepository.findAll().stream()
             .map(responseMapper::toDto)
             .collect(Collectors.toList());
+  }
+
+  @Override
+  public MedicalProviderResponse login(MedicalProviderLoginRequest loginRequest) throws ResourceNotFoundException {
+    Optional<MedicalProvider> optionalMedicalProvider = medicalProviderRepository.findByEmailAndPassword(
+            loginRequest.getEmail(), loginRequest.getPassword());
+
+    if (optionalMedicalProvider.isEmpty()) {
+      throw new ResourceNotFoundException("Invalid email or password");
+    }
+
+    return responseMapper.toDto(optionalMedicalProvider.get());
   }
 
 
