@@ -1,0 +1,79 @@
+# Ignore build directories and their contents
+/build/
+/out/
+
+# Ignore Gradle files generated during the build process
+.gradle/
+/build/
+
+# Ignore class files and other generated files
+/**/*.class
+/**/*.jar
+/**/*.war
+/**/*.ear
+
+# Ignore logs
+*.log
+
+# Ignore IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# Ignore Eclipse files
+.project
+.classpath
+.settings/
+
+# Ignore NetBeans files
+nbproject/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Ignore MacOS files
+.DS_Store
+
+# Ignore Linux and Windows file system specific files
+**/._*
+**/Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.swp
+*.swo
+
+# Ignore Maven specific files
+.mvn/
+target/
+
+# Ignore Node.js and NPM related files (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore coverage reports
+coverage/
+*.lcov
+
+# Ignore environment variable files
+.env
+.env.local
+.env.*.local
+
+# Ignore IDE specific files
+.vscode/
+
+# Ignore Java specific files
+*.class
+
+# Ignore generated source and header files
+/generated/
+generated-sources/
+generated-headers/
+
+# Ignore build cache and temporary files
+/build/tmp/
+.gradle/

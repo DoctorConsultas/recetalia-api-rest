@@ -28,7 +28,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
           "WHERE mp.id = :medicalProviderId",
-          countQuery = "SELECT COUNT(*) FROM prescription p " +
+          countQuery = "SELECT COUNT(p.id) FROM prescription p " +
                   "JOIN medic m ON p.medicId = m.id " +
                   "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
                   "WHERE mp.id = :medicalProviderId",
@@ -46,10 +46,16 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId", nativeQuery = true)
+          "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId",
+          countQuery = "SELECT COUNT(p.id) FROM prescription p " +
+                  "JOIN medic m ON p.medicId = m.id " +
+                  "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+                  "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId",
+          nativeQuery = true)
   Page<Prescription> findPrescriptionsByMedicIdAndMedicalProviderId(@Param("medicId") String medicId,
                                                                     @Param("medicalProviderId") String medicalProviderId,
                                                                     Pageable pageable);
+
   /**
    * Count prescriptions by medical provider ID.
    *
