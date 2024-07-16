@@ -94,4 +94,19 @@ public class MedicController {
     List<MedicResponse> responses = medicService.getMedicsByMedicalProviderId(medicalProviderId);
     return ResponseEntity.ok(responses);
   }
+
+  /**
+   * Get Medics by medical provider ID and search criteria.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @param searchCriteria the search criteria to match against name, lastname, or email
+   * @return a list of MedicResponse DTOs
+   */
+  @GetMapping("/search")
+  public ResponseEntity<List<MedicResponse>> getMedicsByMedicalProviderIdAndSearchCriteria(
+          @RequestParam String medicalProviderId,
+          @RequestParam String searchCriteria) {
+    List<MedicResponse> responses = medicService.getMedicsByMedicalProviderIdAndSearchCriteria(medicalProviderId, searchCriteria, 15);
+    return ResponseEntity.ok(responses);
+  }
 }

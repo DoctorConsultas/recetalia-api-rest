@@ -61,4 +61,15 @@ public interface MedicService {
    * @return a list of MedicResponse DTOs
    */
   List<MedicResponse> getMedicsByMedicalProviderId(String medicalProviderId);
+
+  /**
+   * Gets Medics by medical provider ID and search criteria.
+   *
+   * @param medicalProviderId the ID of the medical provider
+   * @param searchCriteria the search criteria to match against name, lastname, or email
+   * @param limit the maximum number of results to return
+   * @return a list of MedicResponse DTOs
+   */
+  List<MedicResponse> getMedicsByMedicalProviderIdAndSearchCriteria(String medicalProviderId, String searchCriteria, int limit);
+
 }
