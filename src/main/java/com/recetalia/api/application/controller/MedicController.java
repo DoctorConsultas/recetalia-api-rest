@@ -106,7 +106,7 @@ public class MedicController {
   public ResponseEntity<List<MedicResponse>> getMedicsByMedicalProviderIdAndSearchCriteria(
           @RequestParam String medicalProviderId,
           @RequestParam String searchCriteria) {
-    List<MedicResponse> responses = medicService.getMedicsByMedicalProviderIdAndSearchCriteria(medicalProviderId, searchCriteria, 15);
+    List<MedicResponse> responses = medicService.getMedicsByMedicalProviderIdAndSearchCriteria(medicalProviderId, searchCriteria, 5000);
     return ResponseEntity.ok(responses);
   }
 }
