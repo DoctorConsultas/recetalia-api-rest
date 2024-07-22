@@ -35,10 +35,6 @@ public class Medic {
   @Column(name = "phone", nullable = false)
   private String phone;
 
-  @Lob
-  @Column(name = "document", nullable = false)
-  private String document;
-
   @Column(name = "birthdate", nullable = false, length = 150)
   private String birthdate;
 

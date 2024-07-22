@@ -23,8 +23,20 @@ public class PrescriptionResponse {
   @Schema(description = "ID of the medic", example = "medic123", required = true)
   private String medicId;
 
+  @Schema(description = "Name of the medic", example = "John", required = true)
+  private String medicName;
+
+  @Schema(description = "Lastname of the medic", example = "Doe", required = true)
+  private String medicLastname;
+
   @Schema(description = "ID of the patient", example = "patient123", required = true)
   private String patientId;
+
+  @Schema(description = "Name of the patient", example = "Jane", required = true)
+  private String patientName;
+
+  @Schema(description = "Lastname of the patient", example = "Doe", required = true)
+  private String patientLastname;
 
   @Schema(description = "Prescription code", example = "RX123456", required = true)
   private String code;
@@ -76,4 +88,10 @@ public class PrescriptionResponse {
 
   @Schema(description = "Link to the individual prescription resource", example = "http://localhost:8080/api/prescriptions/{id}")
   private String link;
+
+  @Schema(description = "Link to the respective medic resource", example = "http://localhost:8080/api/medics/{id}")
+  private String medicLink;
+
+  @Schema(description = "Link to the respective patient resource", example = "http://localhost:8080/api/patients/{id}")
+  private String patientLink;
 }
