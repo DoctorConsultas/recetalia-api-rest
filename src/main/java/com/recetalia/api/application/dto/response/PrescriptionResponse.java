@@ -23,6 +23,9 @@ public class PrescriptionResponse {
   @Schema(description = "ID of the medic", example = "medic123", required = true)
   private String medicId;
 
+  @Schema(description = "Document of the medic", example = "Doe", required = true)
+  private String medicDocument;
+
   @Schema(description = "Name of the medic", example = "John", required = true)
   private String medicName;
 
@@ -31,6 +34,9 @@ public class PrescriptionResponse {
 
   @Schema(description = "ID of the patient", example = "patient123", required = true)
   private String patientId;
+
+  @Schema(description = "Document of the patient", example = "patient123", required = true)
+  private String patientDocument;
 
   @Schema(description = "Name of the patient", example = "Jane", required = true)
   private String patientName;
