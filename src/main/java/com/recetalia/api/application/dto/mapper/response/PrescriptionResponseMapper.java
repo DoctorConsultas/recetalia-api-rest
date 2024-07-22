@@ -31,6 +31,7 @@ public abstract class PrescriptionResponseMapper {
    * @return the PrescriptionResponse DTO
    */
   @Mapping(source = "medic.id", target = "medicId")
+  @Mapping(source = "medic.cjp", target = "medicCjp")
   @Mapping(source = "medic.name", target = "medicName")
   @Mapping(source = "medic.lastname", target = "medicLastname")
   @Mapping(source = "patient.id", target = "patientId")
