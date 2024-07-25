@@ -96,4 +96,16 @@ public class PatientController {
     List<PatientResponse> responses = patientService.getPatientsByMedicAndMedicalProvider(medicId, medicalProviderId);
     return ResponseEntity.ok(responses);
   }
+
+  /**
+   * Get all Patients of a specific Medical Provider.
+   *
+   * @param medicalProviderId the ID of the Medical Provider
+   * @return a list of PatientResponse DTOs
+   */
+  @GetMapping("/by-provider")
+  public ResponseEntity<List<PatientResponse>> getPatientsByMedicalProvider(@RequestParam String medicalProviderId) {
+    List<PatientResponse> responses = patientService.getPatientsBMedicalProvider(medicalProviderId);
+    return ResponseEntity.ok(responses);
+  }
 }

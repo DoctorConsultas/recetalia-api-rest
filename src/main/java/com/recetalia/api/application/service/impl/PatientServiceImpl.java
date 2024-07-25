@@ -73,4 +73,12 @@ public class PatientServiceImpl implements PatientService {
             .map(responseMapper::toDto)
             .collect(Collectors.toList());
   }
+
+  @Override
+  public List<PatientResponse> getPatientsBMedicalProvider(String medicalProviderId) {
+    List<Patient> patients = patientRepository.findPatientsBMedicalProvider(medicalProviderId);
+    return patients.stream()
+            .map(responseMapper::toDto)
+            .collect(Collectors.toList());
+  }
 }

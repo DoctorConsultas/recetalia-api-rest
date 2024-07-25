@@ -21,4 +21,11 @@ public interface PatientRepository extends JpaRepository<Patient, String> {
           "WHERE p.medic.id = :medicId AND mp.id = :medicalProviderId")
   List<Patient> findPatientsByMedicAndMedicalProvider(@Param("medicId") String medicId,
                                                       @Param("medicalProviderId") String medicalProviderId);
+
+  @Query("SELECT pt FROM Patient pt " +
+          "JOIN Prescription p ON pt.id = p.patient.id " +
+          "JOIN Medic m ON p.medic.id = m.id " +
+          "JOIN MedicalProvider mp ON m.medicalProviderId = mp.id " +
+          "WHERE mp.id = :medicalProviderId")
+  List<Patient> findPatientsBMedicalProvider(@Param("medicalProviderId") String medicalProviderId);
 }

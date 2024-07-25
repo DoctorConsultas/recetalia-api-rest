@@ -1,8 +1,10 @@
 package com.recetalia.api.application.service;
 
+import com.recetalia.api.application.domain.model.entities.Patient;
 import com.recetalia.api.application.dto.request.PatientRequest;
 import com.recetalia.api.application.dto.response.PatientResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -61,4 +63,12 @@ public interface PatientService {
    * @return a list of PatientResponse DTOs
    */
   List<PatientResponse> getPatientsByMedicAndMedicalProvider(String medicId, String medicalProviderId);
+
+  /**
+   * Gets all Patients associated with a specific Medical Provider.
+   *
+   * @param medicalProviderId the ID of the Medical Provider
+   * @return a list of PatientResponse DTOs
+   */
+  List<PatientResponse> getPatientsBMedicalProvider(String medicalProviderId);
 }
