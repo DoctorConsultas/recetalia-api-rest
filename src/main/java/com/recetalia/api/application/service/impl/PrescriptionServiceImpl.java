@@ -82,6 +82,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
+  public Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, pageable);
+    return prescriptions.map(responseMapper::toDto);
+  }
+
+  @Override
   public long getPrescriptionCountByMedicalProviderId(String medicalProviderId) {
     return prescriptionRepository.countPrescriptionsByMedicalProviderId(medicalProviderId);
   }

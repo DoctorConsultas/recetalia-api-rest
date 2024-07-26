@@ -76,6 +76,16 @@ public interface PrescriptionService {
   Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable);
 
   /**
+   * Gets paginated prescriptions by patient ID and medical provider ID.
+   *
+   * @param patientId the ID of the patient
+   * @param medicalProviderId the ID of the medical provider
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
+   */
+  Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, Pageable pageable);
+
+  /**
    * Gets the number of prescriptions by medical provider ID.
    *
    * @param medicalProviderId the ID of the medical provider

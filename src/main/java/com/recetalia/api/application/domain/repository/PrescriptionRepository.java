@@ -36,6 +36,28 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   Page<Prescription> findPrescriptionsByMedicalProviderId(@Param("medicalProviderId") String medicalProviderId, Pageable pageable);
 
   /**
+   * Find paginated prescriptions by patient ID and medical provider ID.
+   *
+   * @param patientId the ID of the patient
+   * @param medicalProviderId the ID of the medical provider
+   * @param pageable the pagination information
+   * @return a page of prescriptions
+   */
+  @Query(value = "SELECT p.* FROM prescription p " +
+          "JOIN medic m ON p.medicId = m.id " +
+          "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+          "WHERE p.patientId = :patientId AND mp.id = :medicalProviderId",
+          countQuery = "SELECT COUNT(p.id) FROM prescription p " +
+                  "JOIN medic m ON p.medicId = m.id " +
+                  "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+                  "WHERE p.patientId = :patientId AND mp.id = :medicalProviderId",
+          nativeQuery = true)
+  Page<Prescription> findPrescriptionsByPatientIdAndMedicalProviderId(@Param("patientId") String patientId,
+                                                                      @Param("medicalProviderId") String medicalProviderId,
+                                                                      Pageable pageable);
+
+
+  /**
    * Find paginated prescriptions by medic ID and medical provider ID.
    *
    * @param medicId the ID of the medic

@@ -118,6 +118,22 @@ public class PrescriptionController {
   }
 
   /**
+   * Get paginated prescriptions by patient ID and medical provider ID.
+   *
+   * @param patientId the ID of the patient
+   * @param medicalProviderId the ID of the medical provider
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
+   */
+  @GetMapping("/by-patient-and-medical-provider-paginated")
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByPatientIdAndMedicalProviderIdPaginated(@RequestParam String patientId,
+                                                                                                           @RequestParam String medicalProviderId,
+                                                                                                           Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, pageable);
+    return ResponseEntity.ok(prescriptions);
+  }
+
+  /**
    * Get the number of prescriptions by medical provider ID.
    *
    * @param medicalProviderId the ID of the medical provider
