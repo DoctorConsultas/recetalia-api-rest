@@ -1,5 +1,6 @@
 package com.recetalia.api.application.service;
 
+import com.recetalia.api.application.domain.model.entities.Prescription;
 import com.recetalia.api.application.dto.request.PrescriptionRequest;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
@@ -107,9 +108,10 @@ public interface PrescriptionService {
    * @param medicalProviderId the ID of the medical provider
    * @param startDate the start date
    * @param endDate the end date
+   * @param pageable the pagination information
    * @return a list of PrescriptionResponse DTOs
    */
-  List<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate);
+  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, Pageable pageable);
 
   /**
    * Get prescriptions by medic ID and date range.

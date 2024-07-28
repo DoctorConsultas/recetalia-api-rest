@@ -158,20 +158,28 @@ public class PrescriptionController {
   }
 
   /**
-   * Get prescriptions by medical provider ID and date range.
+   * Get paginated prescriptions by medical provider ID and date range.
    *
    * @param medicalProviderId the ID of the medical provider
    * @param startDate the start date
    * @param endDate the end date
-   * @return a list of PrescriptionResponse DTOs
+   * @param pageable the pagination information
+   * @return a page of PrescriptionResponse DTOs
    */
   @GetMapping("/by-medical-provider-and-date-range")
-  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdAndDateRange(@RequestParam String medicalProviderId,
-                                                                                                    @RequestParam LocalDate startDate,
-                                                                                                    @RequestParam LocalDate endDate) {
-    Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant(); // end of the day
-    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant);
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdAndDateRange(@RequestParam String medicalProviderId,
+                                                                                                    @RequestParam(required = false) LocalDate startDate,
+                                                                                                    @RequestParam(required = false) LocalDate endDate,
+                                                                                                    Pageable pageable) {
+    Instant startInstant = null;
+    Instant endInstant = null;
+    if (startDate != null) {
+      startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    }
+    if (endDate != null) {
+      endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
+    }
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 

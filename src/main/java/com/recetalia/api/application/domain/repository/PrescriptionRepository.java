@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, String> {
+
   /**
    * Find paginated prescriptions by medical provider ID.
    *
@@ -27,7 +28,8 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE mp.id = :medicalProviderId",
+          "WHERE mp.id = :medicalProviderId " +
+          "ORDER BY p.createdAt DESC",
           countQuery = "SELECT COUNT(p.id) FROM prescription p " +
                   "JOIN medic m ON p.medicId = m.id " +
                   "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
@@ -46,7 +48,8 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE p.patientId = :patientId AND mp.id = :medicalProviderId",
+          "WHERE p.patientId = :patientId AND mp.id = :medicalProviderId " +
+          "ORDER BY p.createdAt DESC",
           countQuery = "SELECT COUNT(p.id) FROM prescription p " +
                   "JOIN medic m ON p.medicId = m.id " +
                   "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
@@ -55,7 +58,6 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   Page<Prescription> findPrescriptionsByPatientIdAndMedicalProviderId(@Param("patientId") String patientId,
                                                                       @Param("medicalProviderId") String medicalProviderId,
                                                                       Pageable pageable);
-
 
   /**
    * Find paginated prescriptions by medic ID and medical provider ID.
@@ -68,7 +70,8 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId",
+          "WHERE p.medicId = :medicId AND mp.id = :medicalProviderId " +
+          "ORDER BY p.createdAt DESC",
           countQuery = "SELECT COUNT(p.id) FROM prescription p " +
                   "JOIN medic m ON p.medicId = m.id " +
                   "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
@@ -99,7 +102,8 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE mp.id = :medicalProviderId AND p.status = 'AVAILABLE'", nativeQuery = true)
+          "WHERE mp.id = :medicalProviderId AND p.status = 'AVAILABLE' " +
+          "ORDER BY p.createdAt DESC", nativeQuery = true)
   List<Prescription> findActivePrescriptionsByMedicalProviderId(@Param("medicalProviderId") String medicalProviderId);
 
   /**
@@ -108,15 +112,27 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
    * @param medicalProviderId the ID of the medical provider
    * @param startDate the start date
    * @param endDate the end date
-   * @return a list of prescriptions
+   * @param pageable the pagination information
+   * @return a page of prescriptions
    */
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
           "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
-          "WHERE mp.id = :medicalProviderId AND p.createdAt BETWEEN :startDate AND :endDate", nativeQuery = true)
-  List<Prescription> findPrescriptionsByMedicalProviderIdAndDateRange(@Param("medicalProviderId") String medicalProviderId,
+          "WHERE mp.id = :medicalProviderId " +
+          "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
+          "AND (:endDate IS NULL OR p.createdAt <= :endDate) " +
+          "ORDER BY p.createdAt DESC",
+          countQuery = "SELECT COUNT(p.id) FROM prescription p " +
+                  "JOIN medic m ON p.medicId = m.id " +
+                  "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+                  "WHERE mp.id = :medicalProviderId " +
+                  "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
+                  "AND (:endDate IS NULL OR p.createdAt <= :endDate)",
+          nativeQuery = true)
+  Page<Prescription> findPrescriptionsByMedicalProviderIdAndDateRange(@Param("medicalProviderId") String medicalProviderId,
                                                                       @Param("startDate") Instant startDate,
-                                                                      @Param("endDate") Instant endDate);
+                                                                      @Param("endDate") Instant endDate,
+                                                                      Pageable pageable);
 
   /**
    * Find prescriptions by medic ID and date range.
@@ -128,7 +144,9 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
    */
   @Query(value = "SELECT p.* FROM prescription p " +
           "JOIN medic m ON p.medicId = m.id " +
-          "WHERE m.id = :medicId AND p.createdAt BETWEEN :startDate AND :endDate", nativeQuery = true)
+          "WHERE m.id = :medicId " +
+          "AND p.createdAt BETWEEN :startDate AND :endDate " +
+          "ORDER BY p.createdAt DESC", nativeQuery = true)
   List<Prescription> findPrescriptionsByMedicIdAndDateRange(@Param("medicId") String medicId,
                                                             @Param("startDate") Instant startDate,
                                                             @Param("endDate") Instant endDate);

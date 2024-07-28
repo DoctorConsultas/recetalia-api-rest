@@ -99,9 +99,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public List<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate) {
-    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate);
-    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, pageable);
+    return prescriptions.map(responseMapper::toDto);
   }
 
   @Override
