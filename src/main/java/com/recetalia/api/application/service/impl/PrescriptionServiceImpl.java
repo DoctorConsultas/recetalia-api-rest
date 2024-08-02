@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -32,11 +33,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Autowired
   private PrescriptionResponseMapper responseMapper;
 
+  @Autowired
+  private DnmaDatabaseService dnmaDatabaseService;
+
   @Override
   public PrescriptionResponse createPrescription(PrescriptionRequest request) {
     Prescription prescription = requestMapper.toEntity(request);
     prescription = prescriptionRepository.save(prescription);
-    return responseMapper.toDto(prescription);
+    return mapPrescriptionWithAmpDetails(prescription);
   }
 
   @Override
@@ -45,14 +49,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             .orElseThrow(() -> new ResourceNotFoundException("Prescription not found for this id :: " + id));
     requestMapper.updateEntityFromDto(request, prescription);
     prescription = prescriptionRepository.save(prescription);
-    return responseMapper.toDto(prescription);
+    return mapPrescriptionWithAmpDetails(prescription);
   }
 
   @Override
   public PrescriptionResponse getPrescriptionById(String id) throws ResourceNotFoundException {
     Prescription prescription = prescriptionRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Prescription not found for this id :: " + id));
-    return responseMapper.toDto(prescription);
+    return mapPrescriptionWithAmpDetails(prescription);
   }
 
   @Override
@@ -65,26 +69,26 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public List<PrescriptionResponse> getAllPrescriptions() {
     return prescriptionRepository.findAll().stream()
-            .map(responseMapper::toDto)
+            .map(this::mapPrescriptionWithAmpDetails)
             .collect(Collectors.toList());
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId, pageable);
-    return prescriptions.map(responseMapper::toDto);
+    return prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId, pageable)
+            .map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable);
-    return prescriptions.map(responseMapper::toDto);
+    return prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable)
+            .map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, pageable);
-    return prescriptions.map(responseMapper::toDto);
+    return prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, pageable)
+            .map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
@@ -94,19 +98,31 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Override
   public List<PrescriptionResponse> getActivePrescriptionsByMedicalProviderId(String medicalProviderId) {
-    List<Prescription> prescriptions = prescriptionRepository.findActivePrescriptionsByMedicalProviderId(medicalProviderId);
-    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+    return prescriptionRepository.findActivePrescriptionsByMedicalProviderId(medicalProviderId).stream()
+            .map(this::mapPrescriptionWithAmpDetails)
+            .collect(Collectors.toList());
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, pageable);
-    return prescriptions.map(responseMapper::toDto);
+    return prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, pageable)
+            .map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate) {
-    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndDateRange(medicId, startDate, endDate);
-    return prescriptions.stream().map(responseMapper::toDto).collect(Collectors.toList());
+    return prescriptionRepository.findPrescriptionsByMedicIdAndDateRange(medicId, startDate, endDate).stream()
+            .map(this::mapPrescriptionWithAmpDetails)
+            .collect(Collectors.toList());
+  }
+
+  private PrescriptionResponse mapPrescriptionWithAmpDetails(Prescription prescription) {
+    PrescriptionResponse response = responseMapper.toDto(prescription);
+    Map<String, String> ampDetails = dnmaDatabaseService.fetchAmpDetails(prescription.getProductId());
+    response.setAmpDsc(ampDetails.get("amp_dsc"));
+    response.setProdMsp(ampDetails.get("prod_msp"));
+    response.setNombreLaboratory(ampDetails.get("nombre_laboratory"));
+    response.setRutLaboratory(ampDetails.get("rut_laboratory"));
+    return response;
   }
 }

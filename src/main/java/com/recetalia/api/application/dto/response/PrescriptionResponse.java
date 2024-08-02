@@ -103,4 +103,16 @@ public class PrescriptionResponse {
 
   @Schema(description = "Link to the respective patient resource", example = "http://localhost:8080/api/patients/{id}")
   private String patientLink;
+
+  @Schema(description = "AMP description", example = "ciprofloxacina 500 mg comprimido recubierto (Dispert)")
+  private String ampDsc;
+
+  @Schema(description = "Product MSP", example = "CIPROFLOXACINA 500 mg DISPERT")
+  private String prodMsp;
+
+  @Schema(description = "Laboratory name", example = "Dispert")
+  private String nombreLaboratory;
+
+  @Schema(description = "Laboratory RUT", example = "210304100013")
+  private String rutLaboratory;
 }
