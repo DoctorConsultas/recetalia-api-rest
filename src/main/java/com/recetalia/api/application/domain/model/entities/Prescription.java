@@ -81,4 +81,7 @@ public class Prescription {
   @ColumnDefault("0")
   @Column(name = "dispensationPendingReminderSended", nullable = false)
   private Byte dispensationPendingReminderSended;
+
+  @OneToOne(mappedBy = "prescription", fetch = FetchType.LAZY)
+  private Dispensation dispensation;
 }

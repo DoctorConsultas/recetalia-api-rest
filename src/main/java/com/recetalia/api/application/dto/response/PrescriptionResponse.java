@@ -110,6 +110,12 @@ public class PrescriptionResponse {
   @Schema(description = "Product MSP", example = "CIPROFLOXACINA 500 mg DISPERT")
   private String prodMsp;
 
+  @Schema(description = "Id of the pharmacy", example = "txrybouihjohiutyf")
+  private String pharmacyId;
+
+  @Schema(description = "Name of the pharmacy", example = "Pharmacy ABC")
+  private String pharmacyName;
+
   @Schema(description = "Laboratory name", example = "Dispert")
   private String nombreLaboratory;
 

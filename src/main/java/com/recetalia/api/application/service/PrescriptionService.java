@@ -58,41 +58,45 @@ public interface PrescriptionService {
   List<PrescriptionResponse> getAllPrescriptions();
 
   /**
-   * Gets paginated prescriptions by medical provider ID.
+   * Gets paginated prescriptions by medical provider ID and statuses.
    *
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
-  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, Pageable pageable);
+  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, List<String> statuses, Pageable pageable);
 
   /**
-   * Gets paginated prescriptions by medic ID and medical provider ID.
+   * Gets paginated prescriptions by medic ID and medical provider ID and statuses.
    *
    * @param medicId the ID of the medic
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
-  Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable);
+  Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, List<String> statuses, Pageable pageable);
 
   /**
-   * Gets paginated prescriptions by patient ID and medical provider ID.
+   * Gets paginated prescriptions by patient ID and medical provider ID and statuses.
    *
    * @param patientId the ID of the patient
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
-  Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, Pageable pageable);
+  Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, List<String> statuses, Pageable pageable);
 
   /**
-   * Gets the number of prescriptions by medical provider ID.
+   * Gets the number of prescriptions by medical provider ID and statuses.
    *
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @return the number of prescriptions
    */
-  long getPrescriptionCountByMedicalProviderId(String medicalProviderId);
+  long getPrescriptionCountByMedicalProviderId(String medicalProviderId, List<String> statuses);
 
   /**
    * Gets active prescriptions by medical provider ID.
@@ -103,23 +107,25 @@ public interface PrescriptionService {
   List<PrescriptionResponse> getActivePrescriptionsByMedicalProviderId(String medicalProviderId);
 
   /**
-   * Gets prescriptions by medical provider ID and date range.
+   * Gets prescriptions by medical provider ID, statuses, and date range.
    *
    * @param medicalProviderId the ID of the medical provider
    * @param startDate the start date
    * @param endDate the end date
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
-   * @return a list of PrescriptionResponse DTOs
+   * @return a page of PrescriptionResponse DTOs
    */
-  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, Pageable pageable);
+  Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, List<String> statuses, Pageable pageable);
 
   /**
-   * Get prescriptions by medic ID and date range.
+   * Get prescriptions by medic ID, statuses, and date range.
    *
    * @param medicId the ID of the medic
    * @param startDate the start date
    * @param endDate the end date
+   * @param statuses the list of statuses to filter
    * @return a list of PrescriptionResponse DTOs
    */
-  List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate);
+  List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate, List<String> statuses);
 }

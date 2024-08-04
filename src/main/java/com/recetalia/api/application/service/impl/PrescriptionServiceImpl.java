@@ -70,26 +70,26 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderId(medicalProviderId, pageable);
+  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, List<String> statuses, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndStatuses(medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
-  public Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable);
+  public Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, List<String> statuses, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
-  public Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, pageable);
+  public Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, List<String> statuses, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
-  public long getPrescriptionCountByMedicalProviderId(String medicalProviderId) {
-    return prescriptionRepository.countPrescriptionsByMedicalProviderId(medicalProviderId);
+  public long getPrescriptionCountByMedicalProviderId(String medicalProviderId, List<String> statuses) {
+    return prescriptionRepository.countPrescriptionsByMedicalProviderId(medicalProviderId, statuses);
   }
 
   @Override
@@ -99,14 +99,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, Pageable pageable) {
-    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, pageable);
+  public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, List<String> statuses, Pageable pageable) {
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
-  public List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate) {
-    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndDateRange(medicId, startDate, endDate);
+  public List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate, List<String> statuses) {
+    List<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndDateRange(medicId, startDate, endDate, statuses);
     return enrichPrescriptionsWithAmpDetails(prescriptions);
   }
 

@@ -89,59 +89,70 @@ public class PrescriptionController {
   }
 
   /**
-   * Get paginated prescriptions by medical provider ID.
+   * Get paginated prescriptions by medical provider ID and statuses.
    *
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
   @GetMapping("/by-medical-provider-paginated")
-  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdPaginated(@RequestParam String medicalProviderId, Pageable pageable) {
-    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, pageable);
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdPaginated(
+          @RequestParam String medicalProviderId,
+          @RequestParam List<String> statuses,
+          Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, statuses, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 
   /**
-   * Get paginated prescriptions by medic ID and medical provider ID.
+   * Get paginated prescriptions by medic ID and medical provider ID and statuses.
    *
    * @param medicId the ID of the medic
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
   @GetMapping("/by-medic-and-medical-provider-paginated")
-  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicIdAndMedicalProviderIdPaginated(@RequestParam String medicId,
-                                                                                                           @RequestParam String medicalProviderId,
-                                                                                                           Pageable pageable) {
-    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, pageable);
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicIdAndMedicalProviderIdPaginated(
+          @RequestParam String medicId,
+          @RequestParam String medicalProviderId,
+          @RequestParam List<String> statuses,
+          Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 
   /**
-   * Get paginated prescriptions by patient ID and medical provider ID.
+   * Get paginated prescriptions by patient ID and medical provider ID and statuses.
    *
    * @param patientId the ID of the patient
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
   @GetMapping("/by-patient-and-medical-provider-paginated")
-  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByPatientIdAndMedicalProviderIdPaginated(@RequestParam String patientId,
-                                                                                                           @RequestParam String medicalProviderId,
-                                                                                                           Pageable pageable) {
-    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, pageable);
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByPatientIdAndMedicalProviderIdPaginated(
+          @RequestParam String patientId,
+          @RequestParam String medicalProviderId,
+          @RequestParam List<String> statuses,
+          Pageable pageable) {
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 
   /**
-   * Get the number of prescriptions by medical provider ID.
+   * Get the number of prescriptions by medical provider ID and statuses.
    *
    * @param medicalProviderId the ID of the medical provider
+   * @param statuses the list of statuses to filter
    * @return the number of prescriptions
    */
   @GetMapping("/count-by-medical-provider")
-  public ResponseEntity<Long> getPrescriptionCountByMedicalProviderId(@RequestParam String medicalProviderId) {
-    long count = prescriptionService.getPrescriptionCountByMedicalProviderId(medicalProviderId);
+  public ResponseEntity<Long> getPrescriptionCountByMedicalProviderId(@RequestParam String medicalProviderId, @RequestParam List<String> statuses) {
+    long count = prescriptionService.getPrescriptionCountByMedicalProviderId(medicalProviderId, statuses);
     return ResponseEntity.ok(count);
   }
 
@@ -158,19 +169,22 @@ public class PrescriptionController {
   }
 
   /**
-   * Get paginated prescriptions by medical provider ID and date range.
+   * Get paginated prescriptions by medical provider ID, statuses, and date range.
    *
    * @param medicalProviderId the ID of the medical provider
    * @param startDate the start date
    * @param endDate the end date
+   * @param statuses the list of statuses to filter
    * @param pageable the pagination information
    * @return a page of PrescriptionResponse DTOs
    */
   @GetMapping("/by-medical-provider-and-date-range")
-  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdAndDateRange(@RequestParam String medicalProviderId,
-                                                                                                    @RequestParam(required = false) LocalDate startDate,
-                                                                                                    @RequestParam(required = false) LocalDate endDate,
-                                                                                                    Pageable pageable) {
+  public ResponseEntity<Page<PrescriptionResponse>> getPrescriptionsByMedicalProviderIdAndDateRange(
+          @RequestParam String medicalProviderId,
+          @RequestParam(required = false) LocalDate startDate,
+          @RequestParam(required = false) LocalDate endDate,
+          @RequestParam List<String> statuses,
+          Pageable pageable) {
     Instant startInstant = null;
     Instant endInstant = null;
     if (startDate != null) {
@@ -179,25 +193,28 @@ public class PrescriptionController {
     if (endDate != null) {
       endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
     }
-    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, pageable);
+    Page<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, statuses, pageable);
     return ResponseEntity.ok(prescriptions);
   }
 
   /**
-   * Get prescriptions by medic ID and date range.
+   * Get prescriptions by medic ID, statuses, and date range.
    *
    * @param medicId the ID of the medic
    * @param startDate the start date
    * @param endDate the end date
+   * @param statuses the list of statuses to filter
    * @return a list of PrescriptionResponse DTOs
    */
   @GetMapping("/by-medic-and-date-range")
-  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicIdAndDateRange(@RequestParam String medicId,
-                                                                                          @RequestParam LocalDate startDate,
-                                                                                          @RequestParam LocalDate endDate) {
+  public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByMedicIdAndDateRange(
+          @RequestParam String medicId,
+          @RequestParam LocalDate startDate,
+          @RequestParam LocalDate endDate,
+          @RequestParam List<String> statuses) {
     Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant(); // end of the day
-    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndDateRange(medicId, startInstant, endInstant);
+    Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
+    List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndDateRange(medicId, startInstant, endInstant, statuses);
     return ResponseEntity.ok(prescriptions);
   }
 }

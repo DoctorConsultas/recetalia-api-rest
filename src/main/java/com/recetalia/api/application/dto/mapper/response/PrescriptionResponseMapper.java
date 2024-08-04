@@ -38,6 +38,8 @@ public abstract class PrescriptionResponseMapper {
   @Mapping(source = "patient.document", target = "patientDocument")
   @Mapping(source = "patient.name", target = "patientName")
   @Mapping(source = "patient.lastname", target = "patientLastname")
+  @Mapping(source = "dispensation.pharmacy.name", target = "pharmacyName")
+  @Mapping(source = "dispensation.pharmacy.id", target = "pharmacyId")
   public abstract PrescriptionResponse toDto(Prescription entity);
 
   /**
