@@ -20,4 +20,12 @@ public interface MedicalProviderRepository extends JpaRepository<MedicalProvider
      * @return an optional containing the found MedicalProvider or empty if not found
      */
     Optional<MedicalProvider> findByEmailAndPassword(String email, String password);
+
+    /**
+     * Finds a MedicalProvider by email.
+     *
+     * @param email the email of the MedicalProvider
+     * @return an optional containing the found MedicalProvider or empty if not found
+     */
+    Optional<MedicalProvider> findByEmail(String email);
 }

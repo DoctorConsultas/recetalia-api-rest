@@ -4,6 +4,7 @@ import com.recetalia.api.application.domain.model.entities.Patient;
 import com.recetalia.api.application.dto.mapper.request.PatientRequestMapper;
 import com.recetalia.api.application.dto.mapper.response.PatientResponseMapper;
 import com.recetalia.api.application.dto.request.PatientRequest;
+import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.dto.response.PatientResponse;
 import com.recetalia.api.application.service.PatientService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
@@ -28,6 +29,9 @@ public class PatientServiceImpl implements PatientService {
 
   @Autowired
   private PatientResponseMapper responseMapper;
+
+  @Autowired
+  private CurrentUserAuthenticatedServiceImpl currentUserAuthenticatedService;
 
   @Override
   public PatientResponse createPatient(PatientRequest request) {
@@ -68,6 +72,8 @@ public class PatientServiceImpl implements PatientService {
 
   @Override
   public List<PatientResponse> getPatientsByMedicAndMedicalProvider(String medicId, String medicalProviderId) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     List<Patient> patients = patientRepository.findPatientsByMedicAndMedicalProvider(medicId, medicalProviderId);
     return patients.stream()
             .map(responseMapper::toDto)
@@ -76,6 +82,8 @@ public class PatientServiceImpl implements PatientService {
 
   @Override
   public List<PatientResponse> getPatientsBMedicalProvider(String medicalProviderId) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     List<Patient> patients = patientRepository.findPatientsBMedicalProvider(medicalProviderId);
     return patients.stream()
             .map(responseMapper::toDto)

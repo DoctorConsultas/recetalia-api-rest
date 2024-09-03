@@ -5,6 +5,7 @@ import com.recetalia.api.application.dto.mapper.request.MedicRequestMapper;
 import com.recetalia.api.application.dto.mapper.response.MedicResponseMapper;
 import com.recetalia.api.application.dto.request.MedicRequest;
 import com.recetalia.api.application.dto.response.MedicResponse;
+import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.service.MedicService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
 import com.recetalia.api.application.domain.repository.MedicRepository;
@@ -28,6 +29,9 @@ public class MedicServiceImpl implements MedicService {
 
   @Autowired
   private MedicResponseMapper responseMapper;
+
+  @Autowired
+  private CurrentUserAuthenticatedServiceImpl currentUserAuthenticatedService;
 
   @Override
   public MedicResponse createMedic(MedicRequest request) {
@@ -68,6 +72,8 @@ public class MedicServiceImpl implements MedicService {
 
   @Override
   public List<MedicResponse> getMedicsByMedicalProviderId(String medicalProviderId) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     List<Medic> medics = medicRepository.findByMedicalProviderId(medicalProviderId);
     return medics.stream()
             .map(responseMapper::toDto)
@@ -76,6 +82,8 @@ public class MedicServiceImpl implements MedicService {
 
   @Override
   public List<MedicResponse> getMedicsByMedicalProviderIdAndSearchCriteria(String medicalProviderId, String searchCriteria, int limit) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     return medicRepository.findByMedicalProviderIdAndSearchCriteria(medicalProviderId, searchCriteria, limit).stream()
             .map(responseMapper::toDto)
             .collect(Collectors.toList());

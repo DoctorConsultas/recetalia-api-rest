@@ -4,6 +4,7 @@ import com.recetalia.api.application.domain.model.entities.Prescription;
 import com.recetalia.api.application.dto.mapper.request.PrescriptionRequestMapper;
 import com.recetalia.api.application.dto.mapper.response.PrescriptionResponseMapper;
 import com.recetalia.api.application.dto.request.PrescriptionRequest;
+import com.recetalia.api.application.dto.response.MedicalProviderResponse;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.service.PrescriptionService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
@@ -32,6 +33,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Autowired
   private DnmaDatabaseService dnmaDatabaseService;
+
+  @Autowired
+  private CurrentUserAuthenticatedServiceImpl currentUserAuthenticatedService;
 
   @Override
   public PrescriptionResponse createPrescription(PrescriptionRequest request) {
@@ -71,35 +75,47 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderId(String medicalProviderId, List<String> statuses, Pageable pageable) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndStatuses(medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicIdAndMedicalProviderId(String medicId, String medicalProviderId, List<String> statuses, Pageable pageable) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByPatientIddAndMedicalProviderId(String patientId, String medicalProviderId, List<String> statuses, Pageable pageable) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByPatientIdAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
 
   @Override
   public long getPrescriptionCountByMedicalProviderId(String medicalProviderId, List<String> statuses) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     return prescriptionRepository.countPrescriptionsByMedicalProviderId(medicalProviderId, statuses);
   }
 
   @Override
   public List<PrescriptionResponse> getActivePrescriptionsByMedicalProviderId(String medicalProviderId) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     List<Prescription> prescriptions = prescriptionRepository.findActivePrescriptionsByMedicalProviderId(medicalProviderId);
     return enrichPrescriptionsWithAmpDetails(prescriptions);
   }
 
   @Override
   public Page<PrescriptionResponse> getPrescriptionsByMedicalProviderIdAndDateRange(String medicalProviderId, Instant startDate, Instant endDate, List<String> statuses, Pageable pageable) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    medicalProviderId = medicalProvider.getId();
     Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startDate, endDate, statuses, pageable);
     return prescriptions.map(this::mapPrescriptionWithAmpDetails);
   }
