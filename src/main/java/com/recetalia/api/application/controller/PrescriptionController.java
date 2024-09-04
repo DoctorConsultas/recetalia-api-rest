@@ -235,7 +235,7 @@ public class PrescriptionController {
           HttpServletResponse response) throws IOException {
 
     List<PrescriptionResponse> prescriptions;
-    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+    Pageable pageable = PageRequest.of(0, 1000, Sort.by(Sort.Direction.DESC, "createdAt"));
 
     if (medicId != null) {
       // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicId=21a72025-a296-4ce5-a1a8-798a8ebe4da4&medicalProviderId=39&statuses=AVAILABLE,DISPENSED
