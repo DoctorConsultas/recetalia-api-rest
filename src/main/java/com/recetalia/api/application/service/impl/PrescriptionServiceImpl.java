@@ -1,5 +1,8 @@
 package com.recetalia.api.application.service.impl;
 
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recetalia.api.application.domain.model.entities.Prescription;
 import com.recetalia.api.application.dto.mapper.request.PrescriptionRequestMapper;
 import com.recetalia.api.application.dto.mapper.response.PrescriptionResponseMapper;
@@ -9,11 +12,17 @@ import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.service.PrescriptionService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
 import com.recetalia.api.application.domain.repository.PrescriptionRepository;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -155,5 +164,64 @@ public class PrescriptionServiceImpl implements PrescriptionService {
               return response;
             })
             .collect(Collectors.toList());
+  }
+
+  @Override
+  public Workbook exportToExcel(List<PrescriptionResponse> prescriptions) {
+    Workbook workbook = new XSSFWorkbook();
+    Sheet sheet = workbook.createSheet("Prescriptions");
+    ObjectMapper objectMapper = new ObjectMapper(); // Jackson ObjectMapper for parsing JSON
+
+    // Create header row
+    Row headerRow = sheet.createRow(0);
+    String[] headers = {"CÓDIGO", "CREADO", "PACIENTE", "CI", "MÉDICO", "CJP", "MEDICAMENTO", "LABORATORIO", "STATUS", "FARMACIA", "FECHA DE ENTREGA"};
+    for (int i = 0; i < headers.length; i++) {
+      Cell cell = headerRow.createCell(i);
+      cell.setCellValue(headers[i]);
+    }
+
+    // Fill data
+    int rowNum = 1;
+    for (PrescriptionResponse prescription : prescriptions) {
+      Row row = sheet.createRow(rowNum++);
+      row.createCell(0).setCellValue(prescription.getCode());
+      row.createCell(1).setCellValue(prescription.getCreatedAt().toString());
+      row.createCell(2).setCellValue(prescription.getPatientName() + " " + prescription.getPatientLastname());
+      // Parse the patientDocument JSON string to extract the "number" field
+      String ciNumber = "";
+      if (prescription.getPatientDocument() != null) {
+        try {
+          JsonNode documentNode = objectMapper.readTree(prescription.getPatientDocument());
+          ciNumber = documentNode.has("number") ? documentNode.get("number").asText() : "";
+        } catch (IOException e) {
+          e.printStackTrace(); // Handle JSON parsing error
+        }
+      }
+      row.createCell(3).setCellValue(ciNumber);
+      row.createCell(4).setCellValue(prescription.getMedicName() + " " + prescription.getMedicLastname());
+      row.createCell(5).setCellValue(prescription.getMedicCjp());
+      row.createCell(6).setCellValue(prescription.getAmpDsc());
+      row.createCell(7).setCellValue(prescription.getNombreLaboratory());
+      row.createCell(8).setCellValue(getStatusLabel(prescription.getStatus()));
+      row.createCell(9).setCellValue(prescription.getPharmacyName() != null ? prescription.getPharmacyName() : "");
+      if(prescription.getStatus().contains("AVAILABLE")) {
+        row.createCell(10).setCellValue("");
+      } else {
+        row.createCell(10).setCellValue(prescription.getUpdatedAt() != null ? prescription.getUpdatedAt().toString() : "");
+      }
+    }
+
+    return workbook;
+  }
+
+  private String getStatusLabel(String status) {
+    switch (status) {
+      case "AVAILABLE":
+        return "Disponible";
+      case "DISPENSED":
+        return "Dispensada";
+      default:
+        return status;
+    }
   }
 }

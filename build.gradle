@@ -9,7 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -34,6 +34,8 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-oauth2-jose'
 	implementation 'org.springframework.security:spring-security-oauth2-client'
 	implementation 'com.auth0:auth0-spring-security-api:1.4.0' // Auth0 dependency
+	implementation 'org.apache.poi:poi:5.2.3'
+	implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
 	// Existing dependencies
 	implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.22'

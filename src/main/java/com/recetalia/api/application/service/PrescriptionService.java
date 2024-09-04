@@ -4,6 +4,7 @@ import com.recetalia.api.application.domain.model.entities.Prescription;
 import com.recetalia.api.application.dto.request.PrescriptionRequest;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -128,4 +129,12 @@ public interface PrescriptionService {
    * @return a list of PrescriptionResponse DTOs
    */
   List<PrescriptionResponse> getPrescriptionsByMedicIdAndDateRange(String medicId, Instant startDate, Instant endDate, List<String> statuses);
+
+  /**
+   * Generates an Excel Workbook from a list of PrescriptionResponse DTOs.
+   *
+   * @param prescriptions the list of PrescriptionResponse DTOs to be included in the Excel file
+   * @return the generated Excel Workbook containing the prescription data
+   */
+  Workbook exportToExcel(List<PrescriptionResponse> prescriptions);
 }

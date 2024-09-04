@@ -4,12 +4,18 @@ import com.recetalia.api.application.dto.request.PrescriptionRequest;
 import com.recetalia.api.application.dto.response.PrescriptionResponse;
 import com.recetalia.api.application.service.PrescriptionService;
 import com.recetalia.api.application.infrastructure.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -216,5 +222,47 @@ public class PrescriptionController {
     Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
     List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByMedicIdAndDateRange(medicId, startInstant, endInstant, statuses);
     return ResponseEntity.ok(prescriptions);
+  }
+
+  @GetMapping("/download/excel")
+  public ResponseEntity<Void> downloadExcel(
+          @RequestParam String medicalProviderId,
+          @RequestParam(required = false) String medicId,
+          @RequestParam(required = false) String patientId,
+          @RequestParam List<String> statuses,
+          @RequestParam(required = false) LocalDate startDate,
+          @RequestParam(required = false) LocalDate endDate,
+          HttpServletResponse response) throws IOException {
+
+    List<PrescriptionResponse> prescriptions;
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+    if (medicId != null) {
+      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicId=21a72025-a296-4ce5-a1a8-798a8ebe4da4&medicalProviderId=39&statuses=AVAILABLE,DISPENSED
+      prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable).getContent();
+    } else if (patientId != null) {
+      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?patientId=e6f712b7-cd2d-4df5-a036-05afa28282b8&medicalProviderId=39&statuses=AVAILABLE,DISPENSED
+      prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable).getContent();
+    } else if (endDate != null) {
+      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicalProviderId=39&startDate=2024-09-03&endDate=2024-09-11&statuses=AVAILABLE,DISPENSED
+      Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+      Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
+      prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, statuses, pageable).getContent();
+    } else {
+      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicalProviderId=39&statuses=AVAILABLE,DISPENSED
+      prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, statuses, pageable).getContent();
+    }
+
+    Workbook workbook = prescriptionService.exportToExcel(prescriptions);
+
+    // Set response headers
+    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=prescriptions.xlsx");
+
+    // Write the workbook to the response output stream
+    workbook.write(response.getOutputStream());
+    workbook.close();
+
+    return ResponseEntity.ok().build();
   }
 }
