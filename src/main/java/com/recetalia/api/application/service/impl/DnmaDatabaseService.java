@@ -32,12 +32,16 @@ public class DnmaDatabaseService {
                     "WHERE AMP_Id IN (" + ampIdList + ")";
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                Map<String, String> ampDetails = new HashMap<>();
-                ampDetails.put("amp_dsc", resultSet.getString("amp_dsc"));
-                ampDetails.put("prod_msp", resultSet.getString("prod_msp"));
-                ampDetails.put("nombre_laboratory", resultSet.getString("nombre_laboratory"));
-                ampDetails.put("rut_laboratory", resultSet.getString("rut_laboratory"));
-                ampDetailsMap.put(resultSet.getString("AMP_Id"), ampDetails);
+                try {
+                    Map<String, String> ampDetails = new HashMap<>();
+                    ampDetails.put("amp_dsc", resultSet.getString("amp_dsc"));
+                    ampDetails.put("prod_msp", resultSet.getString("prod_msp"));
+                    ampDetails.put("nombre_laboratory", resultSet.getString("nombre_laboratory"));
+                    ampDetails.put("rut_laboratory", resultSet.getString("rut_laboratory"));
+                    ampDetailsMap.put(resultSet.getString("AMP_Id"), ampDetails);
+                } catch (Exception e) {
+                    System.err.println("DnmaDatabaseService: " + e.getMessage());
+                }
             }
             resultSet.close();
             statement.close();

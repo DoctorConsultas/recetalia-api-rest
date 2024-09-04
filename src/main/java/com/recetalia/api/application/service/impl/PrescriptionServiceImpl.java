@@ -136,13 +136,18 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   private PrescriptionResponse mapPrescriptionWithAmpDetails(Prescription prescription) {
-    PrescriptionResponse response = responseMapper.toDto(prescription);
-    Map<String, Map<String, String>> ampDetailsMap = dnmaDatabaseService.fetchAmpDetails(List.of(prescription.getProductId()));
-    Map<String, String> ampDetails = ampDetailsMap.get(prescription.getProductId());
-    response.setAmpDsc(ampDetails.get("amp_dsc"));
-    response.setProdMsp(ampDetails.get("prod_msp"));
-    response.setNombreLaboratory(ampDetails.get("nombre_laboratory"));
-    response.setRutLaboratory(ampDetails.get("rut_laboratory"));
+    PrescriptionResponse response = null;
+    try {
+      response = responseMapper.toDto(prescription);
+      Map<String, Map<String, String>> ampDetailsMap = dnmaDatabaseService.fetchAmpDetails(List.of(prescription.getProductId()));
+      Map<String, String> ampDetails = ampDetailsMap.get(prescription.getProductId());
+      response.setAmpDsc(ampDetails.get("amp_dsc"));
+      response.setProdMsp(ampDetails.get("prod_msp"));
+      response.setNombreLaboratory(ampDetails.get("nombre_laboratory"));
+      response.setRutLaboratory(ampDetails.get("rut_laboratory"));
+    } catch (Exception e) {
+      System.err.println("mapPrescriptionWithAmpDetails: " + e.getMessage() +  "; prescription: " + prescription.toString());
+    }
     return response;
   }
 
@@ -179,35 +184,36 @@ public class PrescriptionServiceImpl implements PrescriptionService {
       Cell cell = headerRow.createCell(i);
       cell.setCellValue(headers[i]);
     }
-
     // Fill data
+    Row row;
+    String ciNumber = "";
     int rowNum = 1;
     for (PrescriptionResponse prescription : prescriptions) {
-      Row row = sheet.createRow(rowNum++);
-      row.createCell(0).setCellValue(prescription.getCode());
-      row.createCell(1).setCellValue(prescription.getCreatedAt().toString());
-      row.createCell(2).setCellValue(prescription.getPatientName() + " " + prescription.getPatientLastname());
-      // Parse the patientDocument JSON string to extract the "number" field
-      String ciNumber = "";
-      if (prescription.getPatientDocument() != null) {
-        try {
+      try{
+        row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue(prescription.getCode());
+        row.createCell(1).setCellValue(prescription.getCreatedAt().toString());
+        row.createCell(2).setCellValue(prescription.getPatientName() + " " + prescription.getPatientLastname());
+        // Parse the patientDocument JSON string to extract the "number" field
+        ciNumber = "";
+        if (prescription.getPatientDocument() != null) {
           JsonNode documentNode = objectMapper.readTree(prescription.getPatientDocument());
           ciNumber = documentNode.has("number") ? documentNode.get("number").asText() : "";
-        } catch (IOException e) {
-          e.printStackTrace(); // Handle JSON parsing error
         }
-      }
-      row.createCell(3).setCellValue(ciNumber);
-      row.createCell(4).setCellValue(prescription.getMedicName() + " " + prescription.getMedicLastname());
-      row.createCell(5).setCellValue(prescription.getMedicCjp());
-      row.createCell(6).setCellValue(prescription.getAmpDsc());
-      row.createCell(7).setCellValue(prescription.getNombreLaboratory());
-      row.createCell(8).setCellValue(getStatusLabel(prescription.getStatus()));
-      row.createCell(9).setCellValue(prescription.getPharmacyName() != null ? prescription.getPharmacyName() : "");
-      if(prescription.getStatus().contains("AVAILABLE")) {
-        row.createCell(10).setCellValue("");
-      } else {
-        row.createCell(10).setCellValue(prescription.getUpdatedAt() != null ? prescription.getUpdatedAt().toString() : "");
+        row.createCell(3).setCellValue(ciNumber);
+        row.createCell(4).setCellValue(prescription.getMedicName() + " " + prescription.getMedicLastname());
+        row.createCell(5).setCellValue(prescription.getMedicCjp());
+        row.createCell(6).setCellValue(prescription.getAmpDsc());
+        row.createCell(7).setCellValue(prescription.getNombreLaboratory());
+        row.createCell(8).setCellValue(getStatusLabel(prescription.getStatus()));
+        row.createCell(9).setCellValue(prescription.getPharmacyName() != null ? prescription.getPharmacyName() : "");
+        if(prescription.getStatus().contains("AVAILABLE")) {
+          row.createCell(10).setCellValue("");
+        } else {
+          row.createCell(10).setCellValue(prescription.getUpdatedAt() != null ? prescription.getUpdatedAt().toString() : "");
+        }
+      } catch (IOException e) {
+        System.err.println("prescription.getId: " + prescription.toString() + "; Error: " + e.getMessage());
       }
     }
 
