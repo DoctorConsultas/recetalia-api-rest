@@ -232,25 +232,31 @@ public class PrescriptionController {
           @RequestParam List<String> statuses,
           @RequestParam(required = false) LocalDate startDate,
           @RequestParam(required = false) LocalDate endDate,
+          @RequestParam(required = false) String downloadBy,
           HttpServletResponse response) throws IOException {
 
-    List<PrescriptionResponse> prescriptions;
-    Pageable pageable = PageRequest.of(0, 1000, Sort.by(Sort.Direction.DESC, "createdAt"));
+    List<PrescriptionResponse> prescriptions = List.of();
+    Pageable pageable = PageRequest.of(0, 10000, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-    if (medicId != null) {
-      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicId=21a72025-a296-4ce5-a1a8-798a8ebe4da4&medicalProviderId=39&statuses=AVAILABLE,DISPENSED
-      prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable).getContent();
-    } else if (patientId != null) {
-      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?patientId=e6f712b7-cd2d-4df5-a036-05afa28282b8&medicalProviderId=39&statuses=AVAILABLE,DISPENSED
-      prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable).getContent();
-    } else if (endDate != null) {
-      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicalProviderId=39&startDate=2024-09-03&endDate=2024-09-11&statuses=AVAILABLE,DISPENSED
-      Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-      Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
-      prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, statuses, pageable).getContent();
-    } else {
-      // http://{{ip}}:{{port}}/api/prescriptions/download/excel?medicalProviderId=39&statuses=AVAILABLE,DISPENSED
-      prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, statuses, pageable).getContent();
+    switch (downloadBy) {
+      case "DATE_RANGE":
+        // http://localhost:8080/api/prescriptions/download/excel?medicalProviderId=medicare@recetalia.com&statuses=AVAILABLE,DISPENSED&medicId=all&patientId=all&startDate=2024-09-01&endDate=2024-09-28&downloadBy=DATE_RANGE
+        Instant startInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant endInstant = endDate.atStartOfDay(ZoneId.systemDefault()).plusDays(1).minusNanos(1).toInstant();
+        prescriptions = prescriptionService.getPrescriptionsByMedicalProviderIdAndDateRange(medicalProviderId, startInstant, endInstant, statuses, pageable).getContent();
+        break;
+      case "MEDIC":
+        // http://localhost:8080/api/prescriptions/download/excel?medicalProviderId=medicare@recetalia.com&statuses=AVAILABLE,DISPENSED&medicId=88d90c15-223b-4969-8ccc-a53dbffdf0a5&patientId=all&downloadBy=MEDIC
+        prescriptions = prescriptionService.getPrescriptionsByMedicIdAndMedicalProviderId(medicId, medicalProviderId, statuses, pageable).getContent();
+        break;
+      case "PATIENT":
+        // http://localhost:8080/api/prescriptions/download/excel?medicalProviderId=medicare@recetalia.com&statuses=AVAILABLE,DISPENSED&medicId=all&patientId=043c721e-163f-4ea5-901e-2a00c75e6701&downloadBy=PATIENT
+        prescriptions = prescriptionService.getPrescriptionsByPatientIddAndMedicalProviderId(patientId, medicalProviderId, statuses, pageable).getContent();
+        break;
+      case "PROVIDER":
+        // http://localhost:8080/api/prescriptions/download/excel?medicalProviderId=medicare@recetalia.com&statuses=AVAILABLE,DISPENSED&medicId=all&downloadBy=PROVIDER
+        prescriptions = prescriptionService.getPrescriptionsByMedicalProviderId(medicalProviderId, statuses, pageable).getContent();
+        break;
     }
 
     Workbook workbook = prescriptionService.exportToExcel(prescriptions);
