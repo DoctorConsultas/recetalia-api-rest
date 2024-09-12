@@ -17,6 +17,21 @@ import java.util.List;
 public interface PrescriptionService {
 
   /**
+   * Retrieves a paginated list of prescriptions based on various filters, including medical provider ID,
+   * medic ID, patient ID, prescription statuses, and a date range.
+   *
+   * @param medicalProviderId the ID of the medical provider; if null, the current authenticated medical provider is used
+   * @param medicId the ID of the medic; can be null to ignore this filter
+   * @param patientId the ID of the patient; can be null to ignore this filter
+   * @param statuses the list of prescription statuses to filter by; cannot be null
+   * @param startDate the start date for filtering by the prescription creation date; can be null to ignore this filter
+   * @param endDate the end date for filtering by the prescription creation date; can be null to ignore this filter
+   * @param pageable the pagination information including page number and size
+   * @return a paginated list of {@link PrescriptionResponse} objects that match the specified filters
+   */
+  public Page<PrescriptionResponse> getPrescriptionsByFilters(String medicId, String patientId, List<String> statuses, Instant startDate, Instant endDate, Pageable pageable);
+
+  /**
    * Creates a new Prescription.
    *
    * @param request the PrescriptionRequest DTO

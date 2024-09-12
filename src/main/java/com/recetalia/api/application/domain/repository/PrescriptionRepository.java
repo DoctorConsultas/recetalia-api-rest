@@ -18,6 +18,49 @@ import java.util.List;
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, String> {
 
+    /**
+     * Find prescriptions based on various optional filters.
+     *
+     * @param medicalProviderId the ID of the medical provider
+     * @param medicId the ID of the medic (optional)
+     * @param patientId the ID of the patient (optional)
+     * @param statuses the list of statuses to filter
+     * @param startDate the start date for filtering by date range (optional)
+     * @param endDate the end date for filtering by date range (optional)
+     * @param pageable the pagination information
+     * @return a page of prescriptions
+     */
+    @Query(value = "SELECT p.*, ph.name as pharmacy_name FROM prescription p " +
+            "JOIN medic m ON p.medicId = m.id " +
+            "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+            "LEFT JOIN dispensation d ON p.id = d.prescriptionId " +
+            "LEFT JOIN pharmacy ph ON d.pharmacyId = ph.id " +
+            "WHERE mp.id = :medicalProviderId " +
+            "AND (:medicId IS NULL OR p.medicId = :medicId) " +
+            "AND (:patientId IS NULL OR p.patientId = :patientId) " +
+            "AND p.status IN :statuses " +
+            "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
+            "AND (:endDate IS NULL OR p.createdAt <= :endDate) " +
+            "ORDER BY p.createdAt DESC",
+            countQuery = "SELECT COUNT(p.id) FROM prescription p " +
+                    "JOIN medic m ON p.medicId = m.id " +
+                    "JOIN medical_provider mp ON m.medicalProviderId = mp.id " +
+                    "WHERE mp.id = :medicalProviderId " +
+                    "AND (:medicId IS NULL OR p.medicId = :medicId) " +
+                    "AND (:patientId IS NULL OR p.patientId = :patientId) " +
+                    "AND p.status IN :statuses " +
+                    "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
+                    "AND (:endDate IS NULL OR p.createdAt <= :endDate)",
+            nativeQuery = true)
+    Page<Prescription> findPrescriptionsByFilters(
+            @Param("medicalProviderId") String medicalProviderId,
+            @Param("medicId") String medicId,
+            @Param("patientId") String patientId,
+            @Param("statuses") List<String> statuses,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate,
+            Pageable pageable);
+
   /**
    * Find prescriptions by medical provider ID and status with descending order.
    *

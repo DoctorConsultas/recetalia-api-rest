@@ -47,6 +47,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   private CurrentUserAuthenticatedServiceImpl currentUserAuthenticatedService;
 
   @Override
+  public Page<PrescriptionResponse> getPrescriptionsByFilters(String medicId, String patientId, List<String> statuses, Instant startDate, Instant endDate, Pageable pageable) {
+    MedicalProviderResponse medicalProvider = this.currentUserAuthenticatedService.getCurrentMedicalProvider();
+    String medicalProviderId = medicalProvider.getId();
+    Page<Prescription> prescriptions = prescriptionRepository.findPrescriptionsByFilters(medicalProviderId, medicId, patientId, statuses, startDate, endDate, pageable);
+    return prescriptions.map(this::mapPrescriptionWithAmpDetails);
+  }
+
+  @Override
   public PrescriptionResponse createPrescription(PrescriptionRequest request) {
     Prescription prescription = requestMapper.toEntity(request);
     prescription = prescriptionRepository.save(prescription);
