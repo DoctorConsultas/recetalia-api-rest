@@ -29,9 +29,6 @@ public class MedicResponse {
   @Schema(description = "Email address", example = "medic@example.com", required = true)
   private String email;
 
-  @Schema(description = "Password", example = "securePassword123", required = true)
-  private String password;
-
   @Schema(description = "Phone number", example = "1234567890", required = true)
   private String phone;
 
@@ -68,9 +65,6 @@ public class MedicResponse {
   @Schema(description = "CJP number", example = "CJP123456", required = true)
   private String cjp;
 
-  @Schema(description = "Password forgot code", example = "code123")
-  private String passwordForgotCode;
-
   @Schema(description = "Status of the medic", example = "ACTIVE", required = true)
   private String status;
 
@@ -79,4 +73,10 @@ public class MedicResponse {
 
   @Schema(description = "Medical provider ID", example = "provider123")
   private String medicalProviderId;
+
+  @Schema(description = "Medical Provider name", example = "Provider Name")
+  private String medicalProviderName;
+
+  @Schema(description = "Medic Especiality name", example = "Especiality Name")
+  private String especialityName;
 }

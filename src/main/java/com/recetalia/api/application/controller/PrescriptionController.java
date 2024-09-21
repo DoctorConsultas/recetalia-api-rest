@@ -12,14 +12,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for handling Prescription-related HTTP requests.
@@ -295,5 +302,32 @@ public class PrescriptionController {
     workbook.close();
 
     return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Endpoint to get admin data with role-based access control.
+   *
+   * @return a ResponseEntity containing the admin data
+   */
+  @GetMapping("/admin-data")
+  @PreAuthorize("hasRole('TESTROLEr')")
+  public ResponseEntity<String> getAdminData() {
+    return ResponseEntity.ok("PRESTADORES data");
+  }
+
+  @GetMapping("/admin-data2")
+  public ResponseEntity<String> getAdminData2() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication != null && authentication.isAuthenticated()) {
+      Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+      String roles = authorities.stream()
+              .map(GrantedAuthority::getAuthority)
+              .collect(Collectors.joining(", "));
+
+      return ResponseEntity.ok(roles);
+    } else {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated.");
+    }
   }
 }

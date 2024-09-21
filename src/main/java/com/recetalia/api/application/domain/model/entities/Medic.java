@@ -1,9 +1,13 @@
 package com.recetalia.api.application.domain.model.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.apache.poi.hpsf.GUID;
+import org.hibernate.annotations.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 
@@ -13,7 +17,9 @@ import java.time.Instant;
 @Table(name = "medic")
 public class Medic {
   @Id
-  @Column(name = "id", nullable = false, length = 36)
+  @GeneratedValue
+  @UuidGenerator
+  @Column(name = "id", updatable = false, nullable = false)
   private String id;
 
   @Column(name = "name", nullable = false, length = 150)
@@ -57,10 +63,12 @@ public class Medic {
 
   @ColumnDefault("current_timestamp(6)")
   @Column(name = "createdAt", nullable = false)
+  @CreationTimestamp
   private Instant createdAt;
 
   @ColumnDefault("current_timestamp(6)")
   @Column(name = "updatedAt", nullable = false)
+  @UpdateTimestamp
   private Instant updatedAt;
 
   @Column(name = "deletedAt")
@@ -80,7 +88,11 @@ public class Medic {
   @JoinColumn(name = "especialityId")
   private MedicEspeciality especiality;
 
-  @Column(name = "medicalProviderId", length = 200)
-  private String medicalProviderId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "medicalProviderId", insertable = false)
+  private MedicalProvider medicalProvider;
 
+  @Lob
+  @Column(name = "document", nullable = false)
+  private String document;
 }

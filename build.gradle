@@ -37,6 +37,12 @@ dependencies {
 	implementation 'org.apache.poi:poi:5.2.3'
 	implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	// Hibernate Validator, which is the reference implementation of Jakarta Bean Validation
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+	// You might also need to include this if you're not using Spring Boot's default dependencies
+	implementation 'org.glassfish:jakarta.el:4.0.2'
+
 	// Existing dependencies
 	implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.22'
 	compileOnly 'org.projectlombok:lombok'
