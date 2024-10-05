@@ -28,32 +28,48 @@ ext {
 }
 
 dependencies {
+	// Spring Boot Starters
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'org.springframework.security:spring-security-oauth2-jose'
-	implementation 'org.springframework.security:spring-security-oauth2-client'
-	implementation 'com.auth0:auth0-spring-security-api:1.4.0' // Auth0 dependency
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server' // OAuth2 for resource server (JWT)
+	implementation 'org.springframework.security:spring-security-oauth2-jose'            // JSON Web Token (JWT) support
+	implementation 'org.springframework.security:spring-security-oauth2-client'          // OAuth2 client (optional, if needed)
+
+	// Remove Auth0 dependency, as you will now use your custom API
+	// implementation 'com.auth0:auth0-spring-security-api:1.4.0'
+
+	// Apache POI for Excel handling
 	implementation 'org.apache.poi:poi:5.2.3'
 	implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
+
+	// Other dependencies...
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // For JSON parsing
+
+	// Bean Validation
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-	// Hibernate Validator, which is the reference implementation of Jakarta Bean Validation
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
-	// You might also need to include this if you're not using Spring Boot's default dependencies
-	implementation 'org.glassfish:jakarta.el:4.0.2'
+	implementation 'org.glassfish:jakarta.el:4.0.2'  // Jakarta EL (Expression Language)
 
-	// Existing dependencies
+	// Swagger annotations (for API documentation)
 	implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.22'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// MapStruct dependencies
+	// Lombok for reducing boilerplate code
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MySQL Database Driver
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// MapStruct for DTO mapping
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	// Testing dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
